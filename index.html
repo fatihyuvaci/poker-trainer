@@ -3,15 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#0b1120">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>60bb GTO Trainer</title>
 <style>
   :root {
-    --bg-dark: #0f172a;
+    --bg-dark: #0b1120;
     --panel-bg: #1e293b;
+    --panel-border: #334155;
     --felt-green: #14532d;
     --felt-inner: #166534;
     --color-allin: #f28b82;
@@ -20,6 +21,7 @@
     --color-fold: #8c9095;
     --color-unused: #ffffff;
     --accent-gold: #fbbf24;
+    --accent-blue: #38bdf8;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
   }
@@ -45,25 +47,51 @@
     overflow-x: hidden;
   }
 
-  /* COMPACT MOBILE HEADER */
-  .header {
+  @media (min-width: 981px) {
+    body {
+      height: 100vh;
+      padding: 10px 16px;
+      overflow: hidden;
+    }
+  }
+
+  /* TOP BAR: TITLE + DRILL MODE + SCORE */
+  .top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: var(--panel-bg);
     padding: 8px 12px;
     border-radius: 10px;
+    border: 1px solid var(--panel-border);
     margin-bottom: 6px;
-    border: 1px solid #334155;
+    flex-shrink: 0;
     flex-wrap: wrap;
     gap: 8px;
   }
 
-  .title-block h1 {
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand h1 {
     font-size: 0.95rem;
     font-weight: 800;
-    color: #fff;
     letter-spacing: 0.3px;
+    color: #fff;
+  }
+
+  .brand-tag {
+    background: rgba(56, 189, 248, 0.15);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    white-space: nowrap;
   }
 
   .controls-bar {
@@ -74,22 +102,23 @@
   }
 
   .mode-select {
-    background: #0f172a;
+    background: var(--bg-dark);
     color: #fff;
     border: 1px solid #475569;
-    padding: 4px 8px;
+    padding: 5px 8px;
     border-radius: 6px;
     font-size: 0.72rem;
     font-weight: 600;
+    cursor: pointer;
   }
 
   .stats-pill {
-    background: #0f172a;
-    padding: 4px 9px;
+    background: var(--bg-dark);
+    padding: 5px 9px;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 700;
-    border: 1px solid #334155;
+    border: 1px solid var(--panel-border);
     display: flex;
     gap: 8px;
   }
@@ -98,104 +127,157 @@
     background: transparent;
     color: var(--text-muted);
     border: 1px solid #475569;
-    padding: 4px 8px;
+    padding: 5px 8px;
     border-radius: 6px;
     font-size: 0.7rem;
     cursor: pointer;
   }
 
-  /* TWO-TIER MOBILE NAVIGATION */
-  .nav-container {
-    background: var(--panel-bg);
-    border: 1px solid #334155;
-    border-radius: 10px;
-    padding: 6px;
-    margin-bottom: 8px;
+  /* NAVIGATION BAR (NO HORIZONTAL SCROLL ON MOBILE) */
+  .command-bar {
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    gap: 10px;
+    background: var(--panel-bg);
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 1px solid var(--panel-border);
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
   }
 
-  .pos-bar {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
+  .nav-section {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+
+  .nav-label {
+    font-size: 0.66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-right: 2px;
+  }
+
+  .divider {
+    width: 1px;
+    height: 22px;
+    background: var(--panel-border);
   }
 
   .pos-btn {
-    background: #0f172a;
+    background: var(--bg-dark);
     color: var(--text-muted);
-    border: 1px solid #334155;
-    padding: 7px 4px;
+    border: 1px solid var(--panel-border);
+    padding: 6px 10px;
     border-radius: 7px;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     font-weight: 800;
     cursor: pointer;
+    transition: all 0.12s;
     text-align: center;
-    transition: all 0.12s ease;
   }
 
   .pos-btn.active {
     background: var(--accent-gold);
-    color: #0f172a;
+    color: #0b1120;
     border-color: var(--accent-gold);
   }
 
-  .sub-tabs {
+  .spot-tabs {
     display: flex;
     gap: 5px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
+    flex-wrap: wrap;
+    flex: 1;
   }
 
-  .sub-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .tab-btn {
-    background: #0f172a;
+  .spot-btn {
+    background: var(--bg-dark);
     color: #cbd5e1;
-    border: 1px solid #334155;
+    border: 1px solid var(--panel-border);
     padding: 6px 10px;
     border-radius: 7px;
     font-size: 0.74rem;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.12s;
     white-space: nowrap;
-    flex-shrink: 0;
+    text-align: center;
   }
 
-  .tab-btn.active {
+  .spot-btn.active {
+    background: rgba(251, 191, 36, 0.14);
     color: var(--accent-gold);
     border-color: var(--accent-gold);
-    background: rgba(251, 191, 36, 0.12);
   }
 
-  /* MAIN RESPONSIVE GRID */
+  /* MOBILE NAVIGATION: FIT ALL BUTTONS ON SCREEN WITHOUT SCROLLING */
+  @media (max-width: 768px) {
+    .command-bar {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 6px;
+    }
+    .nav-label, .divider {
+      display: none;
+    }
+    .nav-section {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
+      width: 100%;
+    }
+    .pos-btn {
+      padding: 7px 2px;
+      font-size: 0.72rem;
+    }
+    .spot-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      width: 100%;
+    }
+    .spot-btn {
+      flex: 1 1 calc(33.33% - 4px);
+      min-width: 96px;
+      padding: 7px 4px;
+      font-size: 0.69rem;
+      white-space: normal;
+      line-height: 1.15;
+    }
+  }
+
+  /* MAIN WORKSPACE GRID */
   .main-grid {
     display: grid;
-    grid-template-columns: 1fr 1.15fr;
+    grid-template-columns: 1fr 1.12fr;
     gap: 10px;
     flex: 1;
+    min-height: 0;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 980px) {
     .main-grid {
       grid-template-columns: 1fr;
     }
   }
 
-  /* TABLE PANEL */
+  /* LEFT PANEL: POKER TABLE */
   .table-panel {
     background: var(--panel-bg);
     border-radius: 12px;
     padding: 10px;
-    border: 1px solid #334155;
+    border: 1px solid var(--panel-border);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 10px;
+    min-height: 0;
   }
 
   .scenario-badges {
@@ -205,8 +287,8 @@
   }
 
   .badge-card {
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: var(--bg-dark);
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
     padding: 6px;
     text-align: center;
@@ -221,17 +303,22 @@
   }
 
   .badge-value {
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     font-weight: 800;
     color: var(--accent-gold);
+  }
+
+  .badge-value.stack-highlight {
+    color: var(--accent-blue);
   }
 
   .poker-felt {
     background: radial-gradient(circle, var(--felt-inner) 0%, var(--felt-green) 75%, #064e3b 100%);
     border: 6px solid #3f2e21;
     box-shadow: inset 0 0 25px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.35);
-    border-radius: 90px;
-    min-height: 195px;
+    border-radius: 95px;
+    flex: 1;
+    min-height: 185px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -264,8 +351,8 @@
   }
 
   .playing-card {
-    width: 72px;
-    height: 100px;
+    width: 74px;
+    height: 102px;
     background: #ffffff;
     border-radius: 9px;
     box-shadow: 0 5px 14px rgba(0,0,0,0.5);
@@ -301,12 +388,12 @@
   .suit-clubs { color: #15803d; }
 
   .hand-notation-badge {
-    background: #0f172a;
+    background: var(--bg-dark);
     color: #fff;
     padding: 2px 14px;
     border-radius: 999px;
     font-weight: 800;
-    font-size: 0.84rem;
+    font-size: 0.85rem;
     border: 2px solid var(--accent-gold);
   }
 
@@ -318,8 +405,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: #0f172a;
-    border: 1px solid #334155;
+    background: var(--bg-dark);
+    border: 1px solid var(--panel-border);
     gap: 8px;
   }
 
@@ -401,7 +488,7 @@
   }
 
   .act-btn:active { transform: translateY(2px); }
-  .act-btn:disabled { opacity: 0.45; }
+  .act-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
   .btn-fold { background: #64748b; border-bottom: 4px solid #475569; }
   .btn-call { background: #18181b; border-bottom: 4px solid #09090b; border-top: 1px solid #3f3f46; }
@@ -419,15 +506,16 @@
     font-weight: 600;
   }
 
-  /* 13x13 MATRIX PANEL */
+  /* RIGHT PANEL: 13x13 MATRIX */
   .chart-panel {
     background: var(--panel-bg);
     border-radius: 12px;
     padding: 10px;
-    border: 1px solid #334155;
+    border: 1px solid var(--panel-border);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 0;
   }
 
   .chart-header {
@@ -468,12 +556,18 @@
   .matrix-wrapper {
     position: relative;
     width: 100%;
-    aspect-ratio: 1 / 1;
     max-width: 500px;
+    aspect-ratio: 1 / 1;
     margin: 0 auto;
-    border: 2px solid #0f172a;
+    border: 2px solid var(--bg-dark);
     border-radius: 6px;
     overflow: hidden;
+  }
+
+  @media (min-width: 981px) {
+    .matrix-wrapper {
+      max-height: calc(100vh - 235px);
+    }
   }
 
   .matrix-grid {
@@ -492,7 +586,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(0.48rem, 2.3vw, 0.74rem);
+    font-size: clamp(0.48rem, 2.2vw, 0.74rem);
     font-weight: 700;
     color: #f8fafc;
     text-shadow: 0 1px 2px rgba(0,0,0,0.95);
@@ -533,7 +627,7 @@
   .matrix-mask {
     position: absolute;
     inset: 0;
-    background: rgba(15, 23, 42, 0.93);
+    background: rgba(11, 17, 32, 0.93);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     z-index: 10;
@@ -543,7 +637,8 @@
     justify-content: center;
     text-align: center;
     padding: 16px;
-    transition: opacity 0.18s ease;
+    transition: opacity 0.12s ease;
+    cursor: pointer;
   }
 
   .matrix-mask.hidden {
@@ -571,6 +666,7 @@
     align-items: center;
     font-size: 0.68rem;
     color: var(--text-muted);
+    gap: 6px;
   }
 
   .toggle-peek-btn {
@@ -582,14 +678,17 @@
     font-size: 0.7rem;
     cursor: pointer;
     font-weight: 700;
+    white-space: nowrap;
   }
 </style>
 </head>
 <body>
 
-  <header class="header">
-    <div class="title-block">
-      <h1>♠️ NLH 60bb GTO TRAINER (23 CHARTS)</h1>
+  <!-- TOP HEADER BAR -->
+  <header class="top-bar">
+    <div class="brand">
+      <h1>♠️ NLH 60BB GTO TRAINER</h1>
+      <span class="brand-tag" id="totalChartsTag">23 Charts</span>
     </div>
     <div class="controls-bar">
       <select id="drillMode" class="mode-select">
@@ -606,21 +705,16 @@
     </div>
   </header>
 
-  <!-- MOBILE-FRIENDLY 2-TIER NAVIGATION -->
-  <nav class="nav-container">
-    <div class="pos-bar">
-      <button class="pos-btn active" id="posbtn-UTG" onclick="selectPosGroup('UTG')">UTG</button>
-      <button class="pos-btn" id="posbtn-HJ" onclick="selectPosGroup('HJ')">LJ/HJ</button>
-      <button class="pos-btn" id="posbtn-BN" onclick="selectPosGroup('BN')">BN</button>
-      <button class="pos-btn" id="posbtn-SB" onclick="selectPosGroup('SB')">SB</button>
-      <button class="pos-btn" id="posbtn-BB" onclick="selectPosGroup('BB')">BB</button>
-      <button class="pos-btn" id="posbtn-MIX" onclick="selectPosGroup('MIX')">🔥 MIX</button>
-    </div>
-    <div class="sub-tabs" id="subTabsContainer"></div>
+  <!-- NAVIGATION BAR (POS -> SPOTS) -->
+  <nav class="command-bar">
+    <div class="nav-section" id="posButtonsContainer"></div>
+    <div class="divider"></div>
+    <div class="spot-tabs" id="spotButtonsContainer"></div>
   </nav>
 
+  <!-- MAIN WORKSPACE -->
   <main class="main-grid">
-    <!-- TABLE & CONTROLS -->
+    <!-- LEFT: TABLE & ACTIONS -->
     <section class="table-panel">
       <div class="scenario-badges">
         <div class="badge-card">
@@ -629,7 +723,7 @@
         </div>
         <div class="badge-card">
           <div class="badge-label">Stack</div>
-          <div class="badge-value">60 BB</div>
+          <div class="badge-value stack-highlight" id="badgeStack">60 BB</div>
         </div>
         <div class="badge-card">
           <div class="badge-label">Spot</div>
@@ -639,7 +733,7 @@
 
       <div class="poker-felt">
         <div class="action-history-banner" id="feltBanner">
-          Action on Hero (UTG) — First to Act
+          Action on Hero (UTG 60bb) — First to Act
         </div>
 
         <div class="hero-area">
@@ -673,23 +767,23 @@
       <div id="actionButtonsContainer" class="action-buttons"></div>
     </section>
 
-    <!-- 13x13 RANGE CHART -->
+    <!-- RIGHT: 13x13 MATRIX -->
     <section class="chart-panel">
       <div class="chart-header">
         <div class="chart-title" id="chartTitle">Hand Range 139: UTG 60bb</div>
         <div class="legend" id="chartLegend"></div>
       </div>
 
-      <div class="matrix-wrapper">
+      <div class="matrix-wrapper" id="matrixWrapper">
         <div id="matrixGrid" class="matrix-grid"></div>
         <div id="matrixMask" class="matrix-mask">
           <div class="mask-title">🔒 Chart Hidden</div>
-          <div class="mask-sub">Select your action to reveal the GTO range chart.</div>
+          <div class="mask-sub">Touch & hold here (or hold [`] key) to peek, or choose your action above.</div>
         </div>
       </div>
 
       <div class="chart-footer">
-        <span>Tap Next or press [Space] after answering</span>
+        <span>Hold chart or [`] to peek • Tap Next / [Space]</span>
         <button class="toggle-peek-btn" onclick="togglePeek()">👁️ Peek Chart</button>
       </div>
     </section>
@@ -1424,367 +1518,434 @@
   };
 
   // ============================================================================
-  // SCENARIO DEFINITIONS & GROUPS
+  // 60BB SCENARIOS DICTIONARY (23 SPOTS)
   // ============================================================================
   const SCENARIOS = {
+    // --- UTG / UTG+1 (60bb) ---
     utg_open: {
-      id: 'utg_open', group: 'UTG', shortLabel: '1. UTG Open',
+      id: 'utg_open', stack: '60', group: 'UTG',
       title: 'Hand Range 139: UTG 60bb PFI', pos: 'UTG', spot: 'Open Raise (PFI)',
-      banner: 'Action on Hero (UTG) — First to Act', isConditional: false, raw: RANGE_139_RAW,
+      banner: 'Action on Hero (UTG 60bb) — First to Act', isConditional: false, raw: RANGE_139_RAW,
       borderline: ['A3s','A2s','K9s','K8s','K7s','K6s','Q9s','Q8s','J9s','J8s','T9s','98s','87s','76s','65s','54s','ATo','A9o','KQo','KJo','77','66','55','44','33'],
-      legend: [{ label: 'Raise 15.2%', color: 'var(--color-raise)' }, { label: 'Fold 84.2%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'Raise 2.3x 15.2%', color: 'var(--color-raise)' }, { label: 'Fold 84.2%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',      sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',      sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     utg1_vs_open: {
-      id: 'utg1_vs_open', group: 'UTG', shortLabel: '2. UTG+1 vs Open',
+      id: 'utg1_vs_open', stack: '60', group: 'UTG',
       title: 'Hand Range 265: UTG+1 vs UTG (60bb)', pos: 'UTG+1', spot: 'vs UTG Open',
       banner: 'UTG Opens 2.3x → Action on Hero (UTG+1)', isConditional: false, raw: RANGE_265_RAW,
       borderline: ['AQs','AJs','ATs','A9s','A8s','A7s','A5s','A4s','AKo','KQs','KJs','KTs','K9s','K8s','K6s','AQo','KQo','AJo','QQ','QJs','JJ','TT','99','88','77','66','55','44','65s','54s'],
       legend: [{ label: '3-bet 5.7%', color: 'var(--color-raise)' }, { label: 'Call 2.9%', color: 'var(--color-call)' }, { label: 'Fold 91.4%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     utg_vs_3bet: {
-      id: 'utg_vs_3bet', group: 'UTG', shortLabel: '3. UTG vs 3-Bet',
-      title: 'Hand Range 336: UTG 60bb (vs UTG+1 3-bet)', pos: 'UTG', spot: 'vs UTG+1 3-Bet',
-      banner: 'Hero (UTG) Opens → UTG+1 3-Bets → Hero', isConditional: true, raw: RANGE_336_RAW,
+      id: 'utg_vs_3bet', stack: '60', group: 'UTG',
+      title: 'Hand Range 336: UTG 60bb (2.3x vs UTG+1 3-bet)', pos: 'UTG', spot: 'vs UTG+1 3-Bet',
+      banner: 'Hero (UTG) Opens 2.3x → UTG+1 3-Bets → Action on Hero', isConditional: true, raw: RANGE_336_RAW,
       borderline: Object.keys(RANGE_336_RAW),
       legend: [{ label: 'All-in 5%', color: 'var(--color-allin)' }, { label: '4-bet 15.8%', color: 'var(--color-raise)' }, { label: 'Call 28.2%', color: 'var(--color-call)' }, { label: 'Fold 51%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '4-BET',  sub: 'Key [3]', cls: 'btn-raise' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [4]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '4-BET',  sub: 'Key [3 / R]', cls: 'btn-raise' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [4 / A]', cls: 'btn-allin' }
       ]
     },
     utg1_vs_4bet: {
-      id: 'utg1_vs_4bet', group: 'UTG', shortLabel: '4. UTG+1 vs 4-Bet',
+      id: 'utg1_vs_4bet', stack: '60', group: 'UTG',
       title: 'Hand Range 266: UTG+1 vs UTG 4-bet (60bb)', pos: 'UTG+1', spot: 'vs UTG 4-Bet',
-      banner: 'UTG Opens → Hero 3B → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_266_RAW,
+      banner: 'UTG Opens → Hero (UTG+1) 3-Bets → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_266_RAW,
       borderline: Object.keys(RANGE_266_RAW),
       legend: [{ label: 'All-in 40.5%', color: 'var(--color-allin)' }, { label: 'Call 4.4%', color: 'var(--color-call)' }, { label: 'Fold 55.1%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     },
+
+    // --- LJ / HJ (60bb) ---
     hj_open: {
-      id: 'hj_open', group: 'HJ', shortLabel: '5. LJ/HJ Open',
+      id: 'hj_open', stack: '60', group: 'HJ',
       title: 'Hand Range 123: LJ/HJ 60bb PFI', pos: 'LJ / HJ', spot: 'Open Raise (PFI)',
       banner: 'Action on Hero (LJ/HJ) — Unopened Pot', isConditional: false, raw: RANGE_123_RAW,
       borderline: ['K5s','K4s','K3s','Q8s','Q7s','J8s','J7s','T8s','T7s','T6s','97s','96s','86s','85s','76s','75s','65s','64s','54s','53s','A8o','A7o','KTo','K9o','QTo','Q9o','JTo','J9o','T9o','33','22'],
-      legend: [{ label: 'Raise 28%', color: 'var(--color-raise)' }, { label: 'Fold 71.7%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'Raise 2.3x 28%', color: 'var(--color-raise)' }, { label: 'Fold 71.7%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',      sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',      sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     hj_vs_open: {
-      id: 'hj_vs_open', group: 'HJ', shortLabel: '6. LJ/HJ vs Open',
+      id: 'hj_vs_open', stack: '60', group: 'HJ',
       title: 'Hand Range 258: LJ/HJ vs UTG Open (60bb)', pos: 'LJ / HJ', spot: 'vs UTG Open',
       banner: 'UTG Opens 2.3x → Action on Hero (LJ/HJ)', isConditional: false, raw: RANGE_258_RAW,
       borderline: ['AQs','AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','AKo','AQo','AJo','ATo','A9o','KQs','KJs','KTs','K9s','K8s','K6s','KQo','QQ','QJs','QTs','JJ','JTs','TT','T9s','99','98s','88','77','76s','66','65s','55','54s','44','33','22'],
       legend: [{ label: '3-bet 5.2%', color: 'var(--color-raise)' }, { label: 'Call 9.3%', color: 'var(--color-call)' }, { label: 'Fold 85.5%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     hj_vs_3bet: {
-      id: 'hj_vs_3bet', group: 'HJ', shortLabel: '7. LJ/HJ vs 3-Bet',
-      title: 'Hand Range 330: LJ/HJ 60bb (vs BN 3-bet)', pos: 'LJ / HJ', spot: 'Open vs 3-Bet',
-      banner: 'Hero (LJ/HJ) Opens → BN 3-Bets → Hero', isConditional: true, raw: RANGE_330_RAW,
+      id: 'hj_vs_3bet', stack: '60', group: 'HJ',
+      title: 'Hand Range 330: LJ/HJ 60bb (2.3x vs BN 3-bet)', pos: 'LJ / HJ', spot: '2.3x Open vs 3-Bet',
+      banner: 'Hero (LJ/HJ) Opens 2.3x → BN 3-Bets → Action on Hero', isConditional: true, raw: RANGE_330_RAW,
       borderline: Object.keys(RANGE_330_RAW),
       legend: [{ label: '4-bet 19.2%', color: 'var(--color-raise)' }, { label: 'Call 42.3%', color: 'var(--color-call)' }, { label: 'Fold 38.5%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '4-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '4-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     hj_vs_4bet: {
-      id: 'hj_vs_4bet', group: 'HJ', shortLabel: '8. LJ/HJ vs 4-Bet',
+      id: 'hj_vs_4bet', stack: '60', group: 'HJ',
       title: 'Hand Range 259: LJ/HJ vs UTG 4-bet (60bb)', pos: 'LJ / HJ', spot: 'vs UTG 4-Bet',
-      banner: 'UTG Opens → Hero 3B → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_259_RAW,
+      banner: 'UTG Opens → Hero (LJ/HJ) 3-Bets → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_259_RAW,
       borderline: Object.keys(RANGE_259_RAW),
       legend: [{ label: 'All-in 39.2%', color: 'var(--color-allin)' }, { label: 'Call 6.9%', color: 'var(--color-call)' }, { label: 'Fold 53.9%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     },
+
+    // --- BN (60bb) ---
     bn_open: {
-      id: 'bn_open', group: 'BN', shortLabel: '9. BN Open',
+      id: 'bn_open', stack: '60', group: 'BN',
       title: 'Hand Range 115: BN 60bb PFI', pos: 'BN', spot: 'Open Raise (PFI)',
       banner: 'Action on Hero (BN) — Unopened Pot', isConditional: false, raw: RANGE_115_RAW,
       borderline: ['J4s','J3s','J2s','T4s','T3s','T2s','96s','95s','94s','86s','85s','84s','75s','74s','73s','65s','64s','63s','54s','53s','52s','43s','42s','32s','K6o','K5o','K4o','Q8o','Q7o','J8o','J7o','T8o','T7o','T6o','98o','97o','96o','87o','86o'],
-      legend: [{ label: 'Raise 54.4%', color: 'var(--color-raise)' }, { label: 'Fold 45.5%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'Raise 2.3x 54.4%', color: 'var(--color-raise)' }, { label: 'Fold 45.5%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',      sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',      sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL 1bb',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'OPEN 2.3x', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     bn_vs_open: {
-      id: 'bn_vs_open', group: 'BN', shortLabel: '10. BN vs Open',
+      id: 'bn_vs_open', stack: '60', group: 'BN',
       title: 'Hand Range 230: BN vs UTG (60bb)', pos: 'BN', spot: 'vs UTG Open',
       banner: 'UTG Opens 2.3x → Action on Hero (BN)', isConditional: false, raw: RANGE_230_RAW,
       borderline: ['A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','AKo','KQs','KJs','KTs','K9s','K8s','K7s','K6s','K5s','K4s','AQo','KQo','QQ','Q9s','Q8s','AJo','KJo','QJo','JJ','J9s','J8s','ATo','TT','T8s','T7s','99','98s','97s','88','87s','86s','77','76s','66','65s','64s','55','54s','53s','44','33','22'],
       legend: [{ label: '3-bet 5.5%', color: 'var(--color-raise)' }, { label: 'Call 16.3%', color: 'var(--color-call)' }, { label: 'Fold 78.3%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     bn_vs_3bet: {
-      id: 'bn_vs_3bet', group: 'BN', shortLabel: '11. BN vs 3-Bet',
-      title: 'Hand Range 323: BN 60bb (vs BB 3-bet)', pos: 'BN', spot: 'Open vs BB 3-Bet',
-      banner: 'Hero (BN) Opens → BB 3-Bets → Hero', isConditional: true, raw: RANGE_323_RAW,
+      id: 'bn_vs_3bet', stack: '60', group: 'BN',
+      title: 'Hand Range 323: BN 60bb (2.3x vs BB 3-bet)', pos: 'BN', spot: '2.3x Open vs BB 3-Bet',
+      banner: 'Hero (BN) Opens 2.3x → BB 3-Bets → Action on Hero', isConditional: true, raw: RANGE_323_RAW,
       borderline: Object.keys(RANGE_323_RAW),
       legend: [{ label: 'All-in 3.5%', color: 'var(--color-allin)' }, { label: '4-bet 3.9%', color: 'var(--color-raise)' }, { label: 'Call 52.4%', color: 'var(--color-call)' }, { label: 'Fold 40.2%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '4-BET',  sub: 'Key [3]', cls: 'btn-raise' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [4]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '4-BET',  sub: 'Key [3 / R]', cls: 'btn-raise' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [4 / A]', cls: 'btn-allin' }
       ]
     },
     bn_vs_4bet: {
-      id: 'bn_vs_4bet', group: 'BN', shortLabel: '12. BN vs 4-Bet',
+      id: 'bn_vs_4bet', stack: '60', group: 'BN',
       title: 'Hand Range 231: BN vs UTG 4-bet (60bb)', pos: 'BN', spot: 'vs UTG 4-Bet',
-      banner: 'UTG Opens → Hero 3B → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_231_RAW,
+      banner: 'UTG Opens → Hero (BN) 3-Bets → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_231_RAW,
       borderline: Object.keys(RANGE_231_RAW),
       legend: [{ label: 'All-in 35.8%', color: 'var(--color-allin)' }, { label: 'Call 11.7%', color: 'var(--color-call)' }, { label: 'Fold 52.4%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     },
+
+    // --- SB (60bb) ---
     sb_pfi: {
-      id: 'sb_pfi', group: 'SB', shortLabel: '13. SB PFI',
+      id: 'sb_pfi', stack: '60', group: 'SB',
       title: 'Hand Range 106: SB vs BB (60bb) PFI', pos: 'SB', spot: 'SB PFI (vs BB)',
       banner: 'Unopened Pot → Action on Hero (SB vs BB)', isConditional: false, raw: RANGE_106_RAW,
       borderline: ['AA','ATs','A9s','A5s','A2s','AKo','KJs','K9s','K5s','Q9s','Q8s','J4s','J3s','J2s','T5s','T4s','T3s','T2s','95s','94s','93s','84s','74s','63s','52s','43s','94o','84o','74o','64o','54o','93o','83o','73o','63o','53o','43o','T2o','92o','22'],
-      legend: [{ label: 'Raise 15.1%', color: 'var(--color-raise)' }, { label: 'Limp 69.9%', color: 'var(--color-call)' }, { label: 'Fold 15%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'Raise 3.5x 15.1%', color: 'var(--color-raise)' }, { label: 'Limp 69.9%', color: 'var(--color-call)' }, { label: 'Fold 15%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',       sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'LIMP (1bb)', sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: 'RAISE 3.5x', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',       sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'LIMP (1bb)', sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'RAISE 3.5x', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     sb_limp_vs_iso: {
-      id: 'sb_limp_vs_iso', group: 'SB', shortLabel: '14. SB Limp vs 3.5x',
-      title: 'Hand Range 107: SB Limp vs BB 3.5x (60bb)', pos: 'SB', spot: 'Limp vs 3.5x Iso',
-      banner: 'Hero (SB) Limps → BB Raises 3.5x → Hero', isConditional: true, raw: RANGE_107_RAW,
+      id: 'sb_limp_vs_iso', stack: '60', group: 'SB',
+      title: 'Hand Range 107: SB vs BB 60bb (Limp vs 3.5x)', pos: 'SB', spot: 'Limp vs 3.5x Iso',
+      banner: 'Hero (SB) Limps → BB Raises to 3.5x → Action on Hero', isConditional: true, raw: RANGE_107_RAW,
       borderline: Object.keys(RANGE_107_RAW),
-      legend: [{ label: 'Raise 11.7%', color: 'var(--color-raise)' }, { label: 'Call 47%', color: 'var(--color-call)' }, { label: 'Fold 41.3%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'Raise 3.4x 11.7%', color: 'var(--color-raise)' }, { label: 'Call 47%', color: 'var(--color-call)' }, { label: 'Fold 41.3%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',       sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',       sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: 'RAISE 3.4x', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',       sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',       sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'RAISE 3.4x', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     sb_open_vs_3bet: {
-      id: 'sb_open_vs_3bet', group: 'SB', shortLabel: '15. SB 3.5x vs 3B',
-      title: 'Hand Range 108: SB 3.5x vs BB 3-bet (60bb)', pos: 'SB', spot: '3.5x vs BB 3-Bet',
-      banner: 'Hero (SB) Opens 3.5x → BB 3-Bets → Hero', isConditional: true, raw: RANGE_108_RAW,
+      id: 'sb_open_vs_3bet', stack: '60', group: 'SB',
+      title: 'Hand Range 108: SB vs BB 60bb (3.5x Open vs 2.75x 3-bet)', pos: 'SB', spot: '3.5x Open vs BB 3-Bet',
+      banner: 'Hero (SB) Opens 3.5x → BB 3-Bets 2.75x → Action on Hero', isConditional: true, raw: RANGE_108_RAW,
       borderline: Object.keys(RANGE_108_RAW),
-      legend: [{ label: 'All-in 2%', color: 'var(--color-allin)' }, { label: '4-bet 8.4%', color: 'var(--color-raise)' }, { label: 'Call 44.5%', color: 'var(--color-call)' }, { label: 'Fold 45.1%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'All-in 2%', color: 'var(--color-allin)' }, { label: 'Raise 2.6x 8.4%', color: 'var(--color-raise)' }, { label: 'Call 44.5%', color: 'var(--color-call)' }, { label: 'Fold 45.1%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',       sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',       sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '4-BET 2.6x', sub: 'Key [3]', cls: 'btn-raise' },
-        { code: 'allin', label: 'ALL-IN',     sub: 'Key [4]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',       sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',       sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '4-BET 2.6x', sub: 'Key [3 / R]', cls: 'btn-raise' },
+        { code: 'allin', label: 'ALL-IN',     sub: 'Key [4 / A]', cls: 'btn-allin' }
       ]
     },
     sb_vs_open: {
-      id: 'sb_vs_open', group: 'SB', shortLabel: '16. SB vs UTG Open',
+      id: 'sb_vs_open', stack: '60', group: 'SB',
       title: 'Hand Range 209: SB vs UTG (60bb)', pos: 'SB', spot: 'vs UTG Open',
       banner: 'UTG Opens 2.3x → Action on Hero (SB)', isConditional: false, raw: RANGE_209_RAW,
       borderline: ['AJs','ATs','A9s','A8s','A7s','A6s','A5s','A4s','A3s','A2s','AKo','AQo','AJo','ATo','KQs','KJs','KTs','K9s','K8s','K7s','K6s','K5s','KQo','QQ','QJs','QTs','Q9s','JJ','JTs','J9s','TT','T9s','T8s','99','98s','88','87s','86s','77','76s','66','65s','55','54s','53s','44','33','22'],
       legend: [{ label: '3-bet 5.6%', color: 'var(--color-raise)' }, { label: 'Call 13.8%', color: 'var(--color-call)' }, { label: 'Fold 80.6%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     sb_vs_4bet: {
-      id: 'sb_vs_4bet', group: 'SB', shortLabel: '17. SB vs UTG 4B',
+      id: 'sb_vs_4bet', stack: '60', group: 'SB',
       title: 'Hand Range 210: SB vs UTG 4-bet (60bb)', pos: 'SB', spot: 'vs UTG 4-Bet',
-      banner: 'UTG Opens → Hero 3B → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_210_RAW,
+      banner: 'UTG Opens → Hero (SB) 3-Bets → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_210_RAW,
       borderline: Object.keys(RANGE_210_RAW),
       legend: [{ label: 'All-in 38.5%', color: 'var(--color-allin)' }, { label: 'Call 13.9%', color: 'var(--color-call)' }, { label: 'Fold 47.6%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     },
+
+    // --- BB (60bb) ---
     bb_vs_sb_open: {
-      id: 'bb_vs_sb_open', group: 'BB', shortLabel: '18. BB vs SB 3.5x',
+      id: 'bb_vs_sb_open', stack: '60', group: 'BB',
       title: 'Hand Range 145: BB vs SB 3.5x Raise (60bb)', pos: 'BB', spot: 'vs SB 3.5x Open',
       banner: 'SB Raises 3.5x → Action on Hero (BB)', isConditional: false, raw: RANGE_145_RAW,
       borderline: ['AJs','KQo','Q4s','Q3s','Q2s','AJo','KJo','QJo','J5s','J4s','J3s','J2s','ATo','KTo','QTo','TT','T6s','T5s','T4s','T3s','T2s','A9o','Q9o','J9o','T9o','99','98s','94s','93s','92s','K8o','Q8o','J8o','T8o','98o','87s','84s','83s','82s','A7o','K7o','Q7o','J7o','T7o','97o','87o','76s','73s','72s','A6o','K6o','Q6o','76o','66','62s','A5o','K5o','Q5o','65o','55','A4o','K4o','54o','A3o','K3o','A2o','K2o'],
       legend: [{ label: '3-bet 12.1%', color: 'var(--color-raise)' }, { label: 'Call 54.3%', color: 'var(--color-call)' }, { label: 'Fold 33.6%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     bb_vs_sb_4bet: {
-      id: 'bb_vs_sb_4bet', group: 'BB', shortLabel: '19. BB vs SB 4B',
+      id: 'bb_vs_sb_4bet', stack: '60', group: 'BB',
       title: 'Hand Range 146: BB vs SB 4-bet (60bb)', pos: 'BB', spot: 'vs SB 4-Bet',
-      banner: 'SB Opens → Hero 3B → SB 4-Bets → Hero', isConditional: true, raw: RANGE_146_RAW,
+      banner: 'SB Opens 3.5x → Hero (BB) 3-Bets → SB 4-Bets → Hero', isConditional: true, raw: RANGE_146_RAW,
       borderline: Object.keys(RANGE_146_RAW),
       legend: [{ label: 'All-in 27.4%', color: 'var(--color-allin)' }, { label: 'Call 14.2%', color: 'var(--color-call)' }, { label: 'Fold 58.5%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     },
     bb_vs_sb_limp: {
-      id: 'bb_vs_sb_limp', group: 'BB', shortLabel: '20. BB vs SB Limp',
+      id: 'bb_vs_sb_limp', stack: '60', group: 'BB',
       title: 'Hand Range 153: BB vs SB Limp (60bb)', pos: 'BB', spot: 'vs SB Limp',
       banner: 'SB Limps (1bb) → Action on Hero (BB)', isConditional: false, raw: RANGE_153_RAW,
       borderline: ['A6s','A4s','A3s','A2s','K7s','K6s','K5s','K4s','K3s','K2s','Q9s','Q8s','Q7s','Q6s','Q5s','Q4s','Q3s','Q2s','KJo','QJo','J8s','J7s','J6s','J3s','J2s','ATo','KTo','QTo','JTo','T8s','T7s','T6s','T5s','T4s','T3s','T2s','A9o','K9o','98s','97s','96s','95s','A8o','K8o','87s','86s','77','76s','75s','66','65s','64s','55','54s','44','33','22'],
-      legend: [{ label: 'Raise 43.8%', color: 'var(--color-raise)' }, { label: 'Check 56.2%', color: 'var(--color-call)' }],
+      legend: [{ label: 'Raise 3.5x 43.8%', color: 'var(--color-raise)' }, { label: 'Check 56.2%', color: 'var(--color-call)' }],
       actions: [
-        { code: 'call',  label: 'CHECK',      sub: 'Key [1]', cls: 'btn-call' },
-        { code: 'raise', label: 'RAISE 3.5x', sub: 'Key [2]', cls: 'btn-raise' }
+        { code: 'call',  label: 'CHECK',      sub: 'Key [1 / C]', cls: 'btn-call' },
+        { code: 'raise', label: 'RAISE 3.5x', sub: 'Key [2 / R]', cls: 'btn-raise' }
       ]
     },
     bb_vs_sb_limp_raise: {
-      id: 'bb_vs_sb_limp_raise', group: 'BB', shortLabel: '21. BB vs Limp-Raise',
+      id: 'bb_vs_sb_limp_raise', stack: '60', group: 'BB',
       title: 'Hand Range 154: BB vs SB Limp-Raise (60bb)', pos: 'BB', spot: 'vs SB Limp-Raise',
-      banner: 'SB Limps → Hero Iso 3.5x → SB 3B → Hero', isConditional: true, raw: RANGE_154_RAW,
+      banner: 'SB Limps → Hero Raises 3.5x → SB 3-Bets → Hero', isConditional: true, raw: RANGE_154_RAW,
       borderline: Object.keys(RANGE_154_RAW),
-      legend: [{ label: 'All-in 4.1%', color: 'var(--color-allin)' }, { label: '4-bet 1.4%', color: 'var(--color-raise)' }, { label: 'Call 41.5%', color: 'var(--color-call)' }, { label: 'Fold 53%', color: 'var(--color-fold)' }],
+      legend: [{ label: 'All-in 4.1%', color: 'var(--color-allin)' }, { label: '4-bet 2.2x 1.4%', color: 'var(--color-raise)' }, { label: 'Call 41.5%', color: 'var(--color-call)' }, { label: 'Fold 53%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',       sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',       sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '4-BET 2.2x', sub: 'Key [3]', cls: 'btn-raise' },
-        { code: 'allin', label: 'ALL-IN',     sub: 'Key [4]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',       sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',       sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '4-BET 2.2x', sub: 'Key [3 / R]', cls: 'btn-raise' },
+        { code: 'allin', label: 'ALL-IN',     sub: 'Key [4 / A]', cls: 'btn-allin' }
       ]
     },
     bb_vs_utg_open: {
-      id: 'bb_vs_utg_open', group: 'BB', shortLabel: '22. BB vs UTG Open',
+      id: 'bb_vs_utg_open', stack: '60', group: 'BB',
       title: 'Hand Range 181: BB vs UTG (60bb)', pos: 'BB', spot: 'vs UTG Open',
       banner: 'UTG Opens 2.3x → Action on Hero (BB)', isConditional: false, raw: RANGE_181_RAW,
       borderline: ['ATs','A9s','A8s','A7s','A6s','A5s','A4s','AKo','KQs','KJs','KTs','AQo','QQ','QTs','AJo','JJ','JTs','J9s','ATo','TT','T9s','A8o','K8o','Q8o','J8o','T8o','98o','87s','97o','87o','76s','A6o','K6o','Q6o','86o','76o','65s','A5o','K5o','75o','65o','64o','54o','53o','43o','32o','22'],
       legend: [{ label: '3-bet 5.3%', color: 'var(--color-raise)' }, { label: 'Call 50.6%', color: 'var(--color-call)' }, { label: 'Fold 44.1%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',  sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',  sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'raise', label: '3-BET', sub: 'Key [3]', cls: 'btn-raise' }
+        { code: 'fold',  label: 'FOLD',  sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',  sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'raise', label: '3-BET', sub: 'Key [3 / R]', cls: 'btn-raise' }
       ]
     },
     bb_vs_utg_4bet: {
-      id: 'bb_vs_utg_4bet', group: 'BB', shortLabel: '23. BB vs UTG 4B',
+      id: 'bb_vs_utg_4bet', stack: '60', group: 'BB',
       title: 'Hand Range 182: BB vs UTG 4-bet (60bb)', pos: 'BB', spot: 'vs UTG 4-Bet',
-      banner: 'UTG Opens → Hero 3B → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_182_RAW,
+      banner: 'UTG Opens → Hero (BB) 3-Bets → UTG 4-Bets → Hero', isConditional: true, raw: RANGE_182_RAW,
       borderline: Object.keys(RANGE_182_RAW),
       legend: [{ label: 'All-in 40.3%', color: 'var(--color-allin)' }, { label: 'Call 6.1%', color: 'var(--color-call)' }, { label: 'Fold 53.7%', color: 'var(--color-fold)' }],
       actions: [
-        { code: 'fold',  label: 'FOLD',   sub: 'Key [1]', cls: 'btn-fold' },
-        { code: 'call',  label: 'CALL',   sub: 'Key [2]', cls: 'btn-call' },
-        { code: 'allin', label: 'ALL-IN', sub: 'Key [3]', cls: 'btn-allin' }
+        { code: 'fold',  label: 'FOLD',   sub: 'Key [1 / F]', cls: 'btn-fold' },
+        { code: 'call',  label: 'CALL',   sub: 'Key [2 / C]', cls: 'btn-call' },
+        { code: 'allin', label: 'ALL-IN', sub: 'Key [3 / A]', cls: 'btn-allin' }
       ]
     }
   };
 
-  const POS_GROUPS = {
-    UTG: [
-      { id: 'utg_open', label: '1. UTG Open' },
-      { id: 'utg1_vs_open', label: '2. UTG+1 vs Open' },
-      { id: 'utg_vs_3bet', label: '3. UTG vs 3B' },
-      { id: 'utg1_vs_4bet', label: '4. UTG+1 vs 4B' },
-      { id: 'random_utg', label: '🎲 Mix UTG' }
+  // ============================================================================
+  // NAVIGATION STRUCTURE (60BB COMPLETE — 23 SPOTS)
+  // ============================================================================
+  const NAV_60BB = {
+    positions: [
+      { key: 'UTG', label: 'UTG' },
+      { key: 'HJ',  label: 'LJ/HJ' },
+      { key: 'BN',  label: 'BN' },
+      { key: 'SB',  label: 'SB' },
+      { key: 'BB',  label: 'BB' },
+      { key: 'MIX', label: '🎲 MIX' }
     ],
-    HJ: [
-      { id: 'hj_open', label: '5. LJ/HJ Open' },
-      { id: 'hj_vs_open', label: '6. LJ/HJ vs Open' },
-      { id: 'hj_vs_3bet', label: '7. LJ/HJ vs 3B' },
-      { id: 'hj_vs_4bet', label: '8. LJ/HJ vs 4B' },
-      { id: 'random_hj', label: '🎲 Mix LJ/HJ' }
-    ],
-    BN: [
-      { id: 'bn_open', label: '9. BN Open' },
-      { id: 'bn_vs_open', label: '10. BN vs Open' },
-      { id: 'bn_vs_3bet', label: '11. BN vs 3B' },
-      { id: 'bn_vs_4bet', label: '12. BN vs 4B' },
-      { id: 'random_bn', label: '🎲 Mix BN' }
-    ],
-    SB: [
-      { id: 'sb_pfi', label: '13. SB PFI' },
-      { id: 'sb_limp_vs_iso', label: '14. SB Limp vs 3.5x' },
-      { id: 'sb_open_vs_3bet', label: '15. SB 3.5x vs 3B' },
-      { id: 'sb_vs_open', label: '16. SB vs UTG Open' },
-      { id: 'sb_vs_4bet', label: '17. SB vs UTG 4B' },
-      { id: 'random_sb', label: '🎲 Mix SB' }
-    ],
-    BB: [
-      { id: 'bb_vs_sb_open', label: '18. BB vs SB 3.5x' },
-      { id: 'bb_vs_sb_4bet', label: '19. BB vs SB 4B' },
-      { id: 'bb_vs_sb_limp', label: '20. BB vs SB Limp' },
-      { id: 'bb_vs_sb_limp_raise', label: '21. BB vs Limp-Raise' },
-      { id: 'bb_vs_utg_open', label: '22. BB vs UTG Open' },
-      { id: 'bb_vs_utg_4bet', label: '23. BB vs UTG 4B' },
-      { id: 'random_bb', label: '🎲 Mix BB' }
-    ],
-    MIX: [
-      { id: 'all_random', label: '🔥 All 23 Spots' },
-      { id: 'random_utg', label: '🎲 Mix UTG' },
-      { id: 'random_hj', label: '🎲 Mix LJ/HJ' },
-      { id: 'random_bn', label: '🎲 Mix BN' },
-      { id: 'random_sb', label: '🎲 Mix SB' },
-      { id: 'random_bb', label: '🎲 Mix BB' }
-    ]
+    spots: {
+      UTG: [
+        { id: 'utg_open',     label: '1. UTG Open' },
+        { id: 'utg1_vs_open', label: '2. UTG+1 vs Open' },
+        { id: 'utg_vs_3bet',  label: '3. UTG vs 3B' },
+        { id: 'utg1_vs_4bet', label: '4. UTG+1 vs 4B' },
+        { id: 'mix_60_utg',   label: '🎲 Mix UTG' }
+      ],
+      HJ: [
+        { id: 'hj_open',      label: '5. LJ/HJ Open' },
+        { id: 'hj_vs_open',   label: '6. LJ/HJ vs Open' },
+        { id: 'hj_vs_3bet',   label: '7. LJ/HJ vs 3B' },
+        { id: 'hj_vs_4bet',   label: '8. LJ/HJ vs 4B' },
+        { id: 'mix_60_hj',    label: '🎲 Mix LJ/HJ' }
+      ],
+      BN: [
+        { id: 'bn_open',      label: '9. BN Open' },
+        { id: 'bn_vs_open',   label: '10. BN vs Open' },
+        { id: 'bn_vs_3bet',   label: '11. BN vs 3B' },
+        { id: 'bn_vs_4bet',   label: '12. BN vs 4B' },
+        { id: 'mix_60_bn',    label: '🎲 Mix BN' }
+      ],
+      SB: [
+        { id: 'sb_pfi',          label: '13. SB PFI' },
+        { id: 'sb_limp_vs_iso',  label: '14. Limp vs 3.5x' },
+        { id: 'sb_open_vs_3bet', label: '15. 3.5x vs 3B' },
+        { id: 'sb_vs_open',      label: '16. SB vs UTG' },
+        { id: 'sb_vs_4bet',      label: '17. SB vs 4B' },
+        { id: 'mix_60_sb',       label: '🎲 Mix SB' }
+      ],
+      BB: [
+        { id: 'bb_vs_sb_open',       label: '18. BB vs SB 3.5x' },
+        { id: 'bb_vs_sb_4bet',       label: '19. BB vs SB 4B' },
+        { id: 'bb_vs_sb_limp',       label: '20. BB vs SB Limp' },
+        { id: 'bb_vs_sb_limp_raise', label: '21. BB vs Limp-Raise' },
+        { id: 'bb_vs_utg_open',      label: '22. BB vs UTG' },
+        { id: 'bb_vs_utg_4bet',      label: '23. BB vs UTG 4B' },
+        { id: 'mix_60_bb',           label: '🎲 Mix BB' }
+      ],
+      MIX: [
+        { id: 'mix_60_all', label: '🔥 All 23 Spots' },
+        { id: 'mix_60_utg', label: '🎲 Mix UTG' },
+        { id: 'mix_60_hj',  label: '🎲 Mix LJ/HJ' },
+        { id: 'mix_60_bn',  label: '🎲 Mix BN' },
+        { id: 'mix_60_sb',  label: '🎲 Mix SB' },
+        { id: 'mix_60_bb',  label: '🎲 Mix BB' }
+      ]
+    }
   };
 
-  let currentGroup = 'UTG';
-  let selectedTab = 'utg_open';
+  let currentPosKey = 'UTG';
+  let selectedSpotId = 'utg_open';
   let activeScenario = SCENARIOS.utg_open;
   let lastRenderedScenarioId = null;
   let currentHand = null;
   let answered = false;
   let stats = { correct: 0, total: 0, streak: 0 };
 
-  function selectPosGroup(groupKey) {
-    currentGroup = groupKey;
-    document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`posbtn-${groupKey}`).classList.add('active');
+  // State for Hold-to-Peek (` or Touch Hold) vs Click-to-Toggle
+  let isHoldingPeek = false;
+  let maskWasCoveredBeforeHold = true;
 
-    const list = POS_GROUPS[groupKey];
-    const subContainer = document.getElementById('subTabsContainer');
-    subContainer.innerHTML = list.map(item => `
-      <button class="tab-btn" id="tab-${item.id}" onclick="selectScenario('${item.id}')">${item.label}</button>
+  function initNavigation() {
+    const totalCount = Object.keys(SCENARIOS).length;
+    document.getElementById('totalChartsTag').textContent = `${totalCount} Charts`;
+
+    const posContainer = document.getElementById('posButtonsContainer');
+    posContainer.innerHTML = `<span class="nav-label">Pos:</span>` + NAV_60BB.positions.map(p => `
+      <button class="pos-btn" id="posbtn-${p.key}" onclick="selectPos('${p.key}')">${p.label}</button>
     `).join('');
 
-    selectScenario(list[0].id);
+    selectPos(NAV_60BB.positions[0].key);
   }
 
-  function selectScenario(tabId) {
-    selectedTab = tabId;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    const activeTabEl = document.getElementById(`tab-${tabId}`);
-    if (activeTabEl) activeTabEl.classList.add('active');
+  function selectPos(posKey) {
+    currentPosKey = posKey;
+    document.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+    const posBtn = document.getElementById(`posbtn-${posKey}`);
+    if (posBtn) posBtn.classList.add('active');
+
+    const spots = NAV_60BB.spots[posKey];
+    const spotContainer = document.getElementById('spotButtonsContainer');
+    spotContainer.innerHTML = spots.map(s => `
+      <button class="spot-btn" id="spotbtn-${s.id}" onclick="selectSpot('${s.id}')">${s.label}</button>
+    `).join('');
+
+    selectSpot(spots[0].id);
+  }
+
+  function selectSpot(spotId) {
+    selectedSpotId = spotId;
+    document.querySelectorAll('.spot-btn').forEach(b => b.classList.remove('active'));
+    const spBtn = document.getElementById(`spotbtn-${spotId}`);
+    if (spBtn) spBtn.classList.add('active');
     dealNextHand();
+  }
+
+  function resolveScenarioFromSpot(spotId) {
+    const pick = arr => SCENARIOS[arr[Math.floor(Math.random() * arr.length)]];
+    if (spotId === 'mix_60_utg') {
+      const utgKeys = Object.keys(SCENARIOS).filter(k => SCENARIOS[k].group === 'UTG');
+      return pick(utgKeys);
+    }
+    if (spotId === 'mix_60_hj') {
+      const hjKeys = Object.keys(SCENARIOS).filter(k => SCENARIOS[k].group === 'HJ');
+      return pick(hjKeys);
+    }
+    if (spotId === 'mix_60_bn') {
+      const bnKeys = Object.keys(SCENARIOS).filter(k => SCENARIOS[k].group === 'BN');
+      return pick(bnKeys);
+    }
+    if (spotId === 'mix_60_sb') {
+      const sbKeys = Object.keys(SCENARIOS).filter(k => SCENARIOS[k].group === 'SB');
+      return pick(sbKeys);
+    }
+    if (spotId === 'mix_60_bb') {
+      const bbKeys = Object.keys(SCENARIOS).filter(k => SCENARIOS[k].group === 'BB');
+      return pick(bbKeys);
+    }
+    if (spotId === 'mix_60_all') {
+      return pick(Object.keys(SCENARIOS));
+    }
+    return SCENARIOS[spotId];
   }
 
   function getHandBreakdown(scenario, hand) {
@@ -1803,6 +1964,7 @@
 
   function buildScenarioUI(scenario) {
     document.getElementById('badgePos').textContent = scenario.pos;
+    document.getElementById('badgeStack').textContent = `${scenario.stack} BB`;
     document.getElementById('badgeSpot').textContent = scenario.spot;
     document.getElementById('feltBanner').textContent = scenario.banner;
     document.getElementById('chartTitle').textContent = scenario.title;
@@ -1908,28 +2070,9 @@
 
   function dealNextHand() {
     answered = false;
-
-    if (selectedTab === 'random_utg') {
-      const keys = ['utg_open', 'utg1_vs_open', 'utg_vs_3bet', 'utg1_vs_4bet'];
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else if (selectedTab === 'random_hj') {
-      const keys = ['hj_open', 'hj_vs_open', 'hj_vs_3bet', 'hj_vs_4bet'];
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else if (selectedTab === 'random_bn') {
-      const keys = ['bn_open', 'bn_vs_open', 'bn_vs_3bet', 'bn_vs_4bet'];
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else if (selectedTab === 'random_sb') {
-      const keys = ['sb_pfi', 'sb_limp_vs_iso', 'sb_open_vs_3bet', 'sb_vs_open', 'sb_vs_4bet'];
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else if (selectedTab === 'random_bb') {
-      const keys = ['bb_vs_sb_open', 'bb_vs_sb_4bet', 'bb_vs_sb_limp', 'bb_vs_sb_limp_raise', 'bb_vs_utg_open', 'bb_vs_utg_4bet'];
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else if (selectedTab === 'all_random') {
-      const keys = Object.keys(SCENARIOS);
-      activeScenario = SCENARIOS[keys[Math.floor(Math.random() * keys.length)]];
-    } else {
-      activeScenario = SCENARIOS[selectedTab];
-    }
+    isHoldingPeek = false;
+    maskWasCoveredBeforeHold = true;
+    activeScenario = resolveScenarioFromSpot(selectedSpotId);
 
     buildScenarioUI(activeScenario);
     document.getElementById('matrixMask').classList.remove('hidden');
@@ -1953,7 +2096,7 @@
     const fbIcon = document.getElementById('feedbackIcon');
     fbIcon.className = 'feedback-icon icon-neutral';
     fbIcon.textContent = '?';
-    document.getElementById('feedbackTitle').textContent = `${activeScenario.pos} • ${activeScenario.spot}`;
+    document.getElementById('feedbackTitle').textContent = `${activeScenario.pos} (60bb • ${activeScenario.spot})`;
     document.getElementById('feedbackDesc').textContent = 'Select your action below.';
     document.getElementById('nextBtn').style.display = 'none';
   }
@@ -1974,17 +2117,11 @@
   function submitAction(actionCode) {
     if (answered) return;
     answered = true;
+    maskWasCoveredBeforeHold = false;
 
     const dist = getHandBreakdown(activeScenario, currentHand);
     const chosenFreq = dist[actionCode] || 0;
     const isCorrect = chosenFreq > 0;
-
-    // Android haptic feedback
-    try {
-      if (navigator.vibrate) {
-        navigator.vibrate(isCorrect ? 25 : [50, 40, 50]);
-      }
-    } catch (e) {}
 
     stats.total++;
     if (isCorrect) {
@@ -2026,9 +2163,44 @@
     document.querySelectorAll('.act-btn').forEach(b => b.disabled = true);
   }
 
+  // Click button to toggle permanently until next state change
   function togglePeek() {
-    document.getElementById('matrixMask').classList.toggle('hidden');
+    const mask = document.getElementById('matrixMask');
+    mask.classList.toggle('hidden');
+    maskWasCoveredBeforeHold = !mask.classList.contains('hidden');
   }
+
+  function startHoldPeek() {
+    if (!isHoldingPeek) {
+      isHoldingPeek = true;
+      const mask = document.getElementById('matrixMask');
+      maskWasCoveredBeforeHold = !mask.classList.contains('hidden');
+      mask.classList.add('hidden');
+    }
+  }
+
+  function endHoldPeek() {
+    if (isHoldingPeek) {
+      isHoldingPeek = false;
+      const mask = document.getElementById('matrixMask');
+      if (maskWasCoveredBeforeHold) {
+        mask.classList.remove('hidden');
+      }
+    }
+  }
+
+  // Touch & Mouse Hold-to-Peek on the Matrix Wrapper (Mobile & Desktop friendly)
+  const matrixWrapper = document.getElementById('matrixWrapper');
+  matrixWrapper.addEventListener('touchstart', (e) => {
+    if (!answered) {
+      e.preventDefault();
+      startHoldPeek();
+    }
+  }, { passive: false });
+  matrixWrapper.addEventListener('touchend', endHoldPeek);
+  matrixWrapper.addEventListener('touchcancel', endHoldPeek);
+  matrixWrapper.addEventListener('mousedown', () => { if (!answered) startHoldPeek(); });
+  window.addEventListener('mouseup', endHoldPeek);
 
   function loadStats() {
     try {
@@ -2057,7 +2229,14 @@
     document.getElementById('streakText').textContent = stats.streak;
   }
 
+  // Hold-to-Peek on [`] (Backquote) + Action Shortcuts
   window.addEventListener('keydown', (e) => {
+    if (e.code === 'Backquote' || e.key === '`') {
+      e.preventDefault();
+      startHoldPeek();
+      return;
+    }
+
     const key = e.key.toLowerCase();
     if (!answered) {
       const acts = activeScenario.actions;
@@ -2077,8 +2256,15 @@
     }
   });
 
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Backquote' || e.key === '`') {
+      e.preventDefault();
+      endHoldPeek();
+    }
+  });
+
   loadStats();
-  selectPosGroup('UTG');
+  initNavigation();
 </script>
 </body>
 </html>
